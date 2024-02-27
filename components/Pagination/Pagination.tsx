@@ -2,15 +2,21 @@ import Link from "next/link";
 import React from "react";
 import { getPageLink } from "../../lib/blog-helper";
 
+
 interface Props {
   numberOfPage: number;
   tag: string;
 }
 
+// *getPageLinkはタグが指定されているかどうかによって、タグに基づいた投稿のページリンクか、
+// *タグを指定しない一般的な投稿のページリンクを生成する関数(URLが生成されている)　Linkのhrefに渡す
+
+//*ページ数を表している部分を作成している関数
+//*指定のページ数を選択したら、そのページに飛ぶようにする
 const Pagination = (props: Props) => {
   const { numberOfPage, tag } = props;
 
-  let pages: number[] = [];
+  let pages: number[] = [];   //*number型の配列を作成
   for (let i = 1; i <= numberOfPage; i++) {
     pages.push(i);
   }

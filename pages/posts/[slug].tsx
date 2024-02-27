@@ -18,7 +18,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   const post = await getSinglePost(params.slug);
-
+  // console.log(post);
   return {
     props: {
       post,
@@ -27,14 +27,20 @@ export const getStaticProps = async ({ params }) => {
   };
 };
 
+
+//*ReactMarkdownで囲むことで、マークダウンをHTMLに変換する
+//*components　マークダウンをレンダリングする際に、より細かいカスタマイズが可能
 const Post = ({ post }) => {
+  console.log(post.markdown.parent)
+  console.log("hello")
+  console.log(post.markdown)
   return (
     <section className="container lg:px-2 px-5 h-screen lg:w-2/5 mx-auto mt-20">
       <h2 className="w-full text-2xl font-medium">{post.metadata.title}</h2>
       <div className="border-b-2 w-1/3 mt-1 border-sky-900"></div>
       <span className="text-gray-500">Posted date at {post.metadata.date}</span>
       <br />
-      {post.metadata.tags.map((tag: string, index: number) => (
+      {post.metadata.tags.map((tag, index) => (
         <p
           className="text-white bg-sky-900 rounded-xl font-medium mt-2 px-2 inline-block mr-2"
           key={index}
@@ -56,12 +62,12 @@ const Post = ({ post }) => {
                   {String(children).replace(/\n$/, "")}
                 </SyntaxHighlighter>
               ) : (
-                <code>{children}</code>
+                <code className={className}>{String(children)}</code>
               );
             },
           }}
         >
-          {post.markdown}
+          {post.markdown.parent}
         </ReactMarkdown>
 
         <Link href="/">

@@ -13,6 +13,12 @@ import {
   getPostsForTopPage,
 } from "../../../../../lib/notionAPI";
 
+//*タグを指定したページのリンクを生成する
+//*GetStaticPathsは静的生成（Static Generation）機能の一部で、動的ルートを持つページで使用される
+//*getStaticPathsは、pathsとfallbackの2つのプロパティを持つオブジェクトを返す必要がある
+//*pathsは、動的ルートのパラメータを含む配列を返す必要がある
+//*fallbackは、ビルド時に生成されなかったパスへのアクセスがあった場合の挙動を定義
+//*false、true、または"blocking"のいずれかの値を持つ必要がある
 export const getStaticPaths: GetStaticPaths = async () => {
   const allTags = await getAllTags();
   let params = [];
@@ -35,20 +41,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
+//*特定のタグとページ番号に基づいて、関連するブログ投稿のデータを取得し、それをページコンポーネントに渡す
 export const getStaticProps: GetStaticProps = async (context) => {
   const currentPage: string = context.params?.page.toString();
   const currentTag: string = context.params?.tag.toString();
-
-  const upperCaseCurrentTag =
-    currentTag.charAt(0).toUpperCase() + currentTag.slice(1);
+  const upperCaseCurrentTag = currentTag.charAt(0).toUpperCase() + currentTag.slice(1);
 
   const posts = await getPostsByTagAndPage(
     upperCaseCurrentTag,
     parseInt(currentPage, 10)
   );
-
   const numberOfPagesByTag = await getNumberOfPagesByTag(upperCaseCurrentTag);
-
   const allTags = await getAllTags();
 
   return {
@@ -61,6 +64,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     revalidate: 60 * 60 * 6,
   };
 };
+
+
 
 const BlogTagPageList = ({
   numberOfPagesByTag,
